@@ -24,6 +24,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(500).json({ error: "Upload failed" });
     }
 
+    const userId = fields.userId?.[0];
+    //passed the user id usind formiable
+
     // Formidable v3 returns arrays
     const file = files.file?.[0];
 
@@ -49,12 +52,24 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     console.log(blob);
     console.log(fields.type);
 
+    /* const protocol =
+      req.headers["x-forwarded-proto"] ||
+      (req.headers.host?.includes("localhost") ? "http" : "https");
+    const host = req.headers.host;
+    const baseUrl = `${protocol}://${host}`;
+    const sessionRes = await fetch(`${baseUrl}/api/auth/session`, {
+      headers: { cookie: req.headers.cookie || "" },
+    });
+
+    const session = await sessionRes.json();
+    console.log(session); */
+
     //adding values to neon database tables
     const sql = neon(process.env.DATABASE_URL!);
 
     await sql`
-        INSERT INTO clothes (file, type)
-        VALUES (${blob.url}, ${fields.type?.[0]})
+        INSERT INTO clothes (file, type, user_id)
+        VALUES (${blob.url}, ${fields.type?.[0]}, ${userId})
       `;
 
     return res.status(200).json({

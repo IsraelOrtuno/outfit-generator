@@ -170,8 +170,6 @@ export default function Home() {
       ) : (
         <LogInForm setAlreadyHaveAccount={setAlreadyHaveAccount} />
       )}
-
-      {/* <LogInForm /> */}
     </main>
   );
 }
